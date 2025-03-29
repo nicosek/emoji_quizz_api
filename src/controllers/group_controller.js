@@ -1,5 +1,6 @@
 const Group = require("../models/Group");
 const { NotFoundError } = require("../utils/errors");
+const GroupShowSerializer = require("../serializers/groups/show_serializer");
 
 const GroupController = {
   async index(req, res) {
@@ -10,9 +11,10 @@ const GroupController = {
   async show(req, res) {
     const group = await Group.findById(req.params.id);
     if (!group) throw new NotFoundError(null, { modelName: "Group" });
-    res.json(group);
-  },
 
+    const data = await new GroupShowSerializer(group).serialize();
+    res.json(data);
+  },
   async create(req, res) {
     const group = await Group.create({ name: req.body.name });
     res.status(201).json(group);

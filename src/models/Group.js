@@ -20,4 +20,11 @@ GroupSchema.methods.getMembers = async function () {
   return memberships.map((m) => m.user);
 };
 
+GroupSchema.methods.getMembershipsWithUsers = async function () {
+  return await mongoose
+    .model("Membership")
+    .find({ group: this._id })
+    .populate("user");
+};
+
 module.exports = mongoose.model("Group", GroupSchema);
