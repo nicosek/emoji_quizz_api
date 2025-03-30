@@ -1,12 +1,14 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const uid2 = require("uid2");
+const UserShowSerializer = require("../serializers/users/show_serializer");
 const {
   BadRequestError,
   ConflictError,
   UnauthorizedError,
   NotFoundError,
 } = require("../utils/errors");
+const Membership = require("../models/Membership");
 
 const AuthController = {
   // 🔑 Inscription
@@ -48,10 +50,16 @@ const AuthController = {
     });
     await newUser.save();
 
+    const memberships = await Membership.find({ user: newUser._id }).populate(
+      "group",
+      "name"
+    );
+
     // 🎯 Réponse optimisée
     res.status(201).json({
       _id: newUser._id,
       token: newUser.generateToken(),
+      user: new UserShowSerializer(newUser, memberships).serialize(),
     });
   },
 
@@ -72,8 +80,12 @@ const AuthController = {
       );
     }
 
-    // 📌 Récupération de l'utilisateur avec son salt et son hash
-    const user = await User.findOne({ email }).select("+salt +passwordHash");
+    // 📌 Récupération de l'utilisateur
+    const user = await User.findOne({ email });
+    const memberships = await Membership.find({ user: user._id }).populate(
+      "group",
+      "name"
+    );
 
     if (!user) {
       return next(new NotFoundError(null, { modelName: "User" }));
@@ -87,6 +99,7 @@ const AuthController = {
     res.status(200).json({
       _id: user._id,
       token: user.generateToken(),
+      user: new UserShowSerializer(user, memberships).serialize(),
     });
   },
 };
