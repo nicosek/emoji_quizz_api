@@ -9,6 +9,7 @@ class QuizShowWithAnswersSerializer extends QuizShowSerializer {
       questions: this.quiz.questions.map((q) => ({
         id: q._id,
         label: q.label,
+        categoryName: q.category?.name,
         answer: q.answer,
       })),
     };

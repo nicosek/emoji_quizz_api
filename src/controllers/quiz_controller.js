@@ -30,7 +30,17 @@ const QuizController = {
       endAt: req.body.endAt,
     });
 
-    await quiz.populate(["creator", "group", "questions"]);
+    await quiz.populate([
+      "creator",
+      "group",
+      {
+        path: "questions",
+        populate: {
+          path: "category",
+          select: "name",
+        },
+      },
+    ]);
     const data = new QuizShowWithAnswersSerializer(quiz).serialize();
     res.json(data);
   },
@@ -45,7 +55,17 @@ const QuizController = {
       ? QuizShowWithAnswersSerializer
       : QuizShowSerializer;
 
-    await quiz.populate(["creator", "group", "questions"]);
+    await quiz.populate([
+      "creator",
+      "group",
+      {
+        path: "questions",
+        populate: {
+          path: "category",
+          select: "name",
+        },
+      },
+    ]);
     const data = new SerializerClass(quiz).serialize();
     res.json(data);
   },
@@ -61,8 +81,17 @@ const QuizController = {
     if (req.body.endAt !== undefined) quiz.endAt = req.body.endAt;
 
     await quiz.save();
-    await quiz.populate(["creator", "group", "questions"]);
-
+    await quiz.populate([
+      "creator",
+      "group",
+      {
+        path: "questions",
+        populate: {
+          path: "category",
+          select: "name",
+        },
+      },
+    ]);
     const data = new QuizShowWithAnswersSerializer(quiz).serialize();
     res.json(data);
   },
