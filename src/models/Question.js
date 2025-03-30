@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const QuestionSchema = new mongoose.Schema(
   {
-    emoji: {
+    label: {
       type: String,
       required: [true, "Emoji is required"],
       trim: true,
@@ -23,6 +23,7 @@ const QuestionSchema = new mongoose.Schema(
       ref: "Category",
       required: true,
     },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );

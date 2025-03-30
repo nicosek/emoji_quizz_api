@@ -22,6 +22,23 @@ class BasePolicy {
       role: "admin",
     });
   }
+
+  async isGroupMember(groupId) {
+    if (!this.user || !groupId) return false;
+
+    return await Membership.exists({
+      user: this.user._id,
+      group: groupId,
+    });
+  }
+
+  isOwner() {
+    return (
+      this.user &&
+      this.record &&
+      this.user._id.toString() === this.record.user.toString()
+    );
+  }
 }
 
 module.exports = BasePolicy;

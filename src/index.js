@@ -7,6 +7,8 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const groupRoutes = require("./routes/group");
 const groupMembershipRoutes = require("./routes/groups/members");
+const groupCategoryRoutes = require("./routes/groups/categories");
+const categoryQuestionRoutes = require("./routes/categories/questions");
 const errorHandler = require("./middlewares/error-handler");
 const { NotFoundError } = require("./utils/errors");
 
@@ -26,6 +28,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/groups/:groupId/members", groupMembershipRoutes);
+app.use("/api/groups/:groupId/categories", groupCategoryRoutes);
+app.use("/api/categories/:categoryId/questions", categoryQuestionRoutes);
 
 // Root page
 app.get("/", (req, res) => {
