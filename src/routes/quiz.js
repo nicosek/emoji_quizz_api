@@ -32,4 +32,12 @@ router.delete(
   asyncHandler(QuizController.delete)
 );
 
+// GET /quizzes/:id/leaderboard
+router.get(
+  "/:id/leaderboard",
+  auth,
+  authorize(Quiz, "leaderboard"), // ou une action dédiée genre "leaderboard"
+  asyncHandler(QuizController.leaderboard)
+);
+
 module.exports = router;

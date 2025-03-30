@@ -16,6 +16,7 @@ class BaseSubmissionSerializer {
         title: this.submission.quiz.title,
       },
       score: this.submission.answers?.filter((a) => a.isCorrect).length || 0,
+      createdAt: this.submission.createdAt,
     };
   }
 }

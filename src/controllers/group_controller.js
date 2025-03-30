@@ -1,4 +1,5 @@
 const Group = require("../models/Group");
+const Membership = require("../models/Membership");
 const { NotFoundError } = require("../utils/errors");
 const GroupShowSerializer = require("../serializers/groups/show_serializer");
 
@@ -12,9 +13,13 @@ const GroupController = {
     const group = await Group.findById(req.params.id);
     if (!group) throw new NotFoundError(null, { modelName: "Group" });
 
-    const data = await new GroupShowSerializer(group).serialize();
+    const memberships = await Membership.find({ group: group._id }).populate(
+      "user"
+    );
+    const data = new GroupShowSerializer(group, memberships).serialize();
     res.json(data);
   },
+
   async create(req, res) {
     const group = await Group.create({ name: req.body.name });
     res.status(201).json(group);

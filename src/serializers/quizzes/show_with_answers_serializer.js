@@ -1,8 +1,8 @@
 const QuizShowSerializer = require("./show_serializer");
 
 class QuizShowWithAnswersSerializer extends QuizShowSerializer {
-  async serialize() {
-    const base = await super.serialize();
+  serialize() {
+    const base = super.serialize();
 
     return {
       ...base,

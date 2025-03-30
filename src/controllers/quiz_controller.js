@@ -3,6 +3,9 @@ const { NotFoundError } = require("../utils/errors");
 const QuizIndexSerializer = require("../serializers/quizzes/index_serializer");
 const QuizShowSerializer = require("../serializers/quizzes/show_serializer");
 const QuizShowWithAnswersSerializer = require("../serializers/quizzes/show_with_answers_serializer");
+const fetchBestForLeaderboard = require("../services/quiz_submissions/fetch_best_for_leaderboard");
+const BaseSubmissionSerializer = require("../serializers/quiz_submissions/base_serializer");
+const QuizSubmission = require("../models/QuizSubmission");
 
 const QuizController = {
   // GET /groups/:groupId/quizzes
@@ -27,20 +30,23 @@ const QuizController = {
       endAt: req.body.endAt,
     });
 
-    const data = await new QuizShowWithAnswersSerializer(quiz).serialize();
+    await quiz.populate(["creator", "group", "questions"]);
+    const data = new QuizShowWithAnswersSerializer(quiz).serialize();
     res.json(data);
   },
 
   // GET /quizzes/:id
   async show(req, res) {
     const quiz = await Quiz.findById(req.params.id);
+
     if (!quiz) throw new NotFoundError(null, { modelName: "Quiz" });
 
     const SerializerClass = quiz.shouldShowAnswersTo(req.user)
       ? QuizShowWithAnswersSerializer
       : QuizShowSerializer;
 
-    const data = await new SerializerClass(quiz).serialize();
+    await quiz.populate(["creator", "group", "questions"]);
+    const data = new SerializerClass(quiz).serialize();
     res.json(data);
   },
 
@@ -55,8 +61,9 @@ const QuizController = {
     if (req.body.endAt !== undefined) quiz.endAt = req.body.endAt;
 
     await quiz.save();
+    await quiz.populate(["creator", "group", "questions"]);
 
-    const data = await new QuizShowWithAnswersSerializer(quiz).serialize();
+    const data = new QuizShowWithAnswersSerializer(quiz).serialize();
     res.json(data);
   },
 
@@ -67,6 +74,19 @@ const QuizController = {
 
     await quiz.deleteOne();
     res.status(204).end();
+  },
+
+  // GET /quizzes/:id/leaderboard
+  async leaderboard(req, res) {
+    const submissions = await fetchBestForLeaderboard(req.params.id);
+    // const submissions = await QuizSubmission.find({ quiz: req.params.quizId });
+    console.log("submissions.length:", submissions.length);
+
+    const data = submissions.map((s) =>
+      new BaseSubmissionSerializer(s).serialize()
+    );
+
+    res.json(data);
   },
 };
 

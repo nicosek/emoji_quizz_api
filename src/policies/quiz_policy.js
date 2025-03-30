@@ -13,18 +13,22 @@ class QuizPolicy extends BasePolicy {
     if (!this.record) return false;
     if (this.record.isOwnedBy(this.user)) return true;
 
-    return new Date() >= this.record.startAt;
+    const inGroup = await this.isGroupMember(this.record.group);
+    return inGroup && this.record.started();
   }
 
-  update() {
+  async update() {
     if (!this.record) return false;
-    console.log(new Date() < this.record.endAt);
 
-    return this.record.isOwnedBy(this.user) && new Date() < this.record.endAt;
+    return this.record.isOwnedBy(this.user) && !this.record.started();
   }
 
-  delete() {
+  async delete() {
     return this.update();
+  }
+
+  async leaderboard() {
+    return this.show();
   }
 }
 

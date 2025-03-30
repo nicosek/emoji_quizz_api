@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Membership = require("../models/Membership");
 const UserBaseSerializer = require("../serializers/users/base_serializer");
 const UserShowSerializer = require("../serializers/users/show_serializer");
 // const UserCreateSerializer = require("../serializers/user_create_serializer");
@@ -18,10 +19,14 @@ const UserController = {
     const user = await User.findById(req.params.id);
     if (!user) throw new NotFoundError(null, { modelName: "User" });
 
-    const data = await new UserShowSerializer(user).serialize();
+    const memberships = await Membership.find({ user: user._id }).populate(
+      "group",
+      "name"
+    );
+
+    const data = new UserShowSerializer(user, memberships).serialize();
     res.json(data);
   },
-
   async create(req, res) {
     const user = await createWithParams(req.body, req.files?.avatar);
     const data = new UserBaseSerializer(user).serialize();

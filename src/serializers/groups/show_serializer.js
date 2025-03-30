@@ -1,14 +1,13 @@
 const UserBaseSerializer = require("../users/base_serializer");
 
 class GroupShowSerializer {
-  constructor(group) {
+  constructor(group, memberships) {
     this.group = group;
+    this.memberships = memberships;
   }
 
-  async serialize() {
-    const memberships = await this.group.getMembershipsWithUsers();
-
-    const members = memberships.map((m) => ({
+  serialize() {
+    const members = this.memberships.map((m) => ({
       ...new UserBaseSerializer(m.user).serialize(),
       role: m.role,
     }));

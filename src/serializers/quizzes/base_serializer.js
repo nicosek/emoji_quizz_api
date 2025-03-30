@@ -3,9 +3,7 @@ class BaseQuizSerializer {
     this.quiz = quiz;
   }
 
-  async serialize() {
-    await this.quiz.populate(["creator", "group"]);
-
+  serialize() {
     return {
       id: this.quiz._id,
       title: this.quiz.title,

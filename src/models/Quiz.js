@@ -60,7 +60,7 @@ QuizSchema.methods.ended = function () {
 
 QuizSchema.methods.shouldShowAnswersTo = function (user) {
   if (this.isOwnedBy(user)) return true;
-  return new Date() > this.endAt;
+  this.ended();
 };
 
 module.exports = mongoose.model("Quiz", QuizSchema);
