@@ -9,6 +9,9 @@ const groupRoutes = require("./routes/group");
 const groupMembershipRoutes = require("./routes/groups/members");
 const groupCategoryRoutes = require("./routes/groups/categories");
 const categoryQuestionRoutes = require("./routes/categories/questions");
+const groupQuizRoutes = require("./routes/groups/quizzes");
+const quizRoutes = require("./routes/quiz");
+const quizSubmissionRoutes = require("./routes/quizzes/submissions");
 const errorHandler = require("./middlewares/error-handler");
 const { NotFoundError } = require("./utils/errors");
 
@@ -30,6 +33,9 @@ app.use("/api/groups", groupRoutes);
 app.use("/api/groups/:groupId/members", groupMembershipRoutes);
 app.use("/api/groups/:groupId/categories", groupCategoryRoutes);
 app.use("/api/categories/:categoryId/questions", categoryQuestionRoutes);
+app.use("/api/groups/:groupId/quizzes", groupQuizRoutes);
+app.use("/api/quizzes", quizRoutes);
+app.use("/api/quizzes/:quizId/quiz_submissions", quizSubmissionRoutes);
 
 // Root page
 app.get("/", (req, res) => {

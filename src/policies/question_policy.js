@@ -22,15 +22,15 @@ class QuestionPolicy extends BasePolicy {
 
   // ✅ Peut voir/modifier/supprimer sa propre question uniquement
   show() {
-    return this.isOwner();
+    return this.isRecordOwner();
   }
 
   update() {
-    return this.isOwner();
+    return this.isRecordOwner();
   }
 
   delete() {
-    return this.isOwner();
+    return this.isRecordOwner();
   }
 }
 

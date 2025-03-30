@@ -14,7 +14,6 @@ const QuestionController = {
 
   // POST /categories/:categoryId/questions
   async create(req, res) {
-    console.log(req.body);
     const question = await Question.create({
       category: req.params.categoryId,
       user: req.user._id,

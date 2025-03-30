@@ -32,11 +32,19 @@ class BasePolicy {
     });
   }
 
-  isOwner() {
+  isRecordOwner() {
     return (
       this.user &&
       this.record &&
       this.user._id.toString() === this.record.user.toString()
+    );
+  }
+
+  isCreator() {
+    return (
+      this.user &&
+      this.record &&
+      this.user._id.toString() === this.record.creator.toString()
     );
   }
 }

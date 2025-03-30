@@ -7,6 +7,10 @@ const QuizSchema = new mongoose.Schema(
       required: [true, "Quiz title is required"],
       trim: true,
     },
+    description: {
+      type: String,
+      trim: true,
+    },
     group: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Group",
@@ -41,3 +45,22 @@ const QuizSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+QuizSchema.methods.isOwnedBy = function (user) {
+  return this.creator?.toString() === user._id.toString();
+};
+
+QuizSchema.methods.started = function () {
+  return new Date() >= this.startAt;
+};
+
+QuizSchema.methods.ended = function () {
+  return new Date() > this.endAt;
+};
+
+QuizSchema.methods.shouldShowAnswersTo = function (user) {
+  if (this.isOwnedBy(user)) return true;
+  return new Date() > this.endAt;
+};
+
+module.exports = mongoose.model("Quiz", QuizSchema);

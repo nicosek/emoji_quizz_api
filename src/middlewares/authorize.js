@@ -1,4 +1,5 @@
 const { ForbiddenError } = require("../utils/errors");
+const _ = require("lodash");
 
 const authorize = (Model, action) => {
   return async (req, res, next) => {
@@ -7,7 +8,8 @@ const authorize = (Model, action) => {
     req.record = record;
 
     // ✅ 2. Chargement de la Policy (erreur naturelle si inexistante)
-    const PolicyClass = require(`../policies/${Model.modelName.toLowerCase()}_policy`);
+    const modelName = _.snakeCase(Model.modelName); // ✅ grâce à Lodash
+    const PolicyClass = require(`../policies/${modelName}_policy`);
 
     // ✅ 3. Vérification de l'autorisation via la Policy (erreur naturelle si action non définie)
     const policy = new PolicyClass(req);

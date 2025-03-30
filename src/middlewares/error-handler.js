@@ -1,7 +1,6 @@
 const { MONGO_ERROR_MAP } = require("../utils/mongo_errors");
 
 const errorHandler = (err, req, res, next) => {
-  console.log(err);
   const ErrorClass = MONGO_ERROR_MAP[err.name] || MONGO_ERROR_MAP[err.code];
   if (ErrorClass) err = new ErrorClass(null, { err });
 

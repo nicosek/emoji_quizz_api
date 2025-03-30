@@ -20,8 +20,6 @@ const AuthController = {
     if (!firstName) missingFields.push("firstName");
     if (!lastName) missingFields.push("lastName");
 
-    console.log(req.body);
-
     if (missingFields.length > 0) {
       return next(
         new BadRequestError(
